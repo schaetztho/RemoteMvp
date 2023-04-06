@@ -1,0 +1,69 @@
+using Microsoft.VisualBasic;
+
+namespace RemoteMvpClient
+{
+    public partial class ClientView : Form
+    {
+
+        public event EventHandler<string> onUiActionPerformed;
+
+        public ClientView()
+        {
+            InitializeComponent();
+        }
+
+        private void login_Click(object sender, EventArgs e)
+        {
+            onUiActionPerformed?.Invoke(sender, $"action=login;user={tbUsername.Text};password={tbPassword.Text};");
+        }
+
+        private void register_Click(object sender, EventArgs e)
+        {
+            onUiActionPerformed?.Invoke(sender, $"action=register;user={tbUsername.Text};password={tbPassword.Text};");
+        }
+
+
+        public void ShowErrorMessage(string message)
+        {
+            MessageBox.Show(message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        public void LoginOk(string text)
+        {
+            MessageBox.Show(text, "Login", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+
+        public void RegisterOk(string text)
+        {
+            MessageBox.Show(text, "Register", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+
+        private void TbUsernameTextChanged(object sender, EventArgs e)
+        {
+            if (tbUsername.Text.Length > 0 && tbPassword.Text.Length > 0)
+            {
+                button1.Enabled = true;
+                button2.Enabled = true;
+            }
+            else
+            {
+                button1.Enabled = false;
+                button2.Enabled = false;
+            }
+        }
+
+        private void TbPasswordTextChanged(object sender, EventArgs e)
+        {
+            if (tbUsername.Text.Length > 0 && tbPassword.Text.Length > 0)
+            {
+                button1.Enabled = true;
+                button2.Enabled = true;
+            }
+            else
+            {
+                button1.Enabled = false;
+                button2.Enabled = false;
+            }
+        }
+    }
+}
