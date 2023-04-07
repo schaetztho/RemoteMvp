@@ -27,18 +27,15 @@ namespace RemoteMvpApp
 
         public UserListActionResult LoginUser(string username, string password)
         {
-            foreach (var user in _users)
+            foreach (var user in _users.Where(user => user.UserName.Equals(username)))
             {
-                if (user.UserName.Equals(username))
+                if (user.Password.Equals(password))
                 {
-                    if (user.Password.Equals(password))
-                    {
-                        return UserListActionResult.AccessGranted;
-                    }
-                    else
-                    {
-                        return UserListActionResult.UserOkPasswordWrong;
-                    }
+                    return UserListActionResult.AccessGranted;
+                }
+                else
+                {
+                    return UserListActionResult.UserOkPasswordWrong;
                 }
             }
 
@@ -47,22 +44,19 @@ namespace RemoteMvpApp
 
         public UserListActionResult RegisterUser(string username, string password)
         {
-            User newUser = new(username, password);
-            foreach (var user in _users)
+            if (_users.Any(user => user.UserName.Equals(username)))
             {
-                if (user.UserName.Equals(username))
-                {
-                    return UserListActionResult.UserAlreadyExists;
-                }
+                return UserListActionResult.UserAlreadyExists;
             }
 
+            User newUser = new(username, password);
             _users.Add(newUser);
             return UserListActionResult.RegistrationOk;
         }
 
-        public void RemoveUser(string UserName)
+        public void RemoveUser(string username)
         {
-            // TODO
+            _users.RemoveAll(user => user.UserName.Equals(username));
         }
 
     }

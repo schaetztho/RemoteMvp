@@ -5,17 +5,21 @@ namespace RemoteMvpApp
     internal class ApplicationController
     {
         // Model 
-        private Userlist _users;
-        
-        readonly IActionEndpoint _actionEndpoint;
+        private readonly Userlist _users;
+
+        // ActionEndpoint (to be called by the view)
+        private readonly IActionEndpoint _actionEndpoint;
 
         public ApplicationController(IActionEndpoint actionEndpoint)
         {
+            // Create new Model
             _users = new Userlist();
 
+            // Link ActionEndpoint to local method
             _actionEndpoint = actionEndpoint;
             _actionEndpoint.OnActionPerformed += EndpointOnActionPerformed;
 
+            // Run ActionEndPoint as async
             RunActionEndPointAsync();
         }
 
@@ -25,24 +29,23 @@ namespace RemoteMvpApp
             task.Start();
         }
 
-        private void EndpointOnActionPerformed(object? sender, string cmd) 
+        private void EndpointOnActionPerformed(object? sender, string cmd)
         {
-            if (sender is RemoteActionEndpoint)
-            {
-                var parameters = ProcessCmd(cmd);
+            if (sender is not RemoteActionEndpoint) return;
+            
+            var parameters = ProcessCmd(cmd);
 
-                RemoteActionEndpoint handler = (RemoteActionEndpoint)sender;
-                switch (parameters["action"])
-                {
-                    case "login":
-                        Process_Login(handler, parameters["user"],parameters["password"]);
-                        break;
-                    case "register":
-                        Process_Register(handler, parameters["user"], parameters["password"]);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException("Request not supported");
-                }
+            var handler = (RemoteActionEndpoint)sender;
+            switch (parameters["action"])
+            {
+                case "login":
+                    Process_Login(handler, parameters["user"],parameters["password"]);
+                    break;
+                case "register":
+                    Process_Register(handler, parameters["user"], parameters["password"]);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("Request not supported");
             }
         }
         
