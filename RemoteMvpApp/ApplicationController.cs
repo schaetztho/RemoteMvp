@@ -4,29 +4,28 @@ namespace RemoteMvpApp
 {
     internal class ApplicationController
     {
+        // Model 
+        private Userlist _users;
+        
         readonly IActionEndpoint _actionEndpoint;
 
-        private record User(string UserName, string Password);
-
-        private readonly List<User> _users;
-
-        public ApplicationController(IActionEndpoint actionEndpoint) 
+        public ApplicationController(IActionEndpoint actionEndpoint)
         {
-            _users = new List<User>();
+            _users = new Userlist();
 
             _actionEndpoint = actionEndpoint;
-            _actionEndpoint.OnActionPerformed += ActionEndpointOnActionPerformed;
+            _actionEndpoint.OnActionPerformed += EndpointOnActionPerformed;
 
-            StartServerAsync();
+            RunActionEndPointAsync();
         }
 
-        private void StartServerAsync()
+        private void RunActionEndPointAsync()
         {
             var task = new Task(_actionEndpoint.RunActionEndpoint);
             task.Start();
         }
 
-        private void ActionEndpointOnActionPerformed(object? sender, string cmd) 
+        private void EndpointOnActionPerformed(object? sender, string cmd) 
         {
             if (sender is RemoteActionEndpoint)
             {
@@ -49,43 +48,39 @@ namespace RemoteMvpApp
         
         private void Process_Login(RemoteActionEndpoint handler, string username, string password)
         {
-
-            foreach (var user in _users)
+            switch (_users.LoginUser(username, password))
             {
-                if (user.UserName.Equals(username))
-                {
-                    if (user.Password.Equals(password))
-                    {
-                        handler.PerformActionResponse(handler.Handler, "action=login;msg=Access granted.");
-                        return;
-                    }
-                    else
-                    {
-                        handler.PerformActionResponse(handler.Handler, "action=error;msg=Wrong password.");
-                        return;
-                    }
-                }
+                case UserListActionResult.AccessGranted:
+                    handler.PerformActionResponse(handler.Handler, "action=login;msg=Access granted.");
+                    break;
+                case UserListActionResult.UserOkPasswordWrong:
+                    handler.PerformActionResponse(handler.Handler, "action=error;msg=Wrong password."); 
+                    break;
+                case UserListActionResult.UserNotExisting:
+                    handler.PerformActionResponse(handler.Handler, "action=error;msg=User not existing.");
+                    break;
+                default:
+                    handler.PerformActionResponse(handler.Handler, "action=error;msg=Unsupported action.");
+                    break;
             }
-
-            handler.PerformActionResponse(handler.Handler, "action=error;msg=User not existing.");
         }
 
         private void Process_Register(RemoteActionEndpoint handler, string username, string password)
         {
-            User newUser = new(username, password);
-
-            if (_users.Contains(newUser))
+            switch (_users.RegisterUser(username, password))
             {
-                Console.WriteLine("Error registering: User already existing.");
-
-                handler.PerformActionResponse(handler.Handler, "action=error;msg=Error! User is already existing.");
-            }
-            else
-            {
-                _users.Add(newUser);
-                Console.WriteLine($"Added new user {newUser.UserName} with password {newUser.Password}");
-                
-                handler.PerformActionResponse(handler.Handler, "action=register;msg=Successful. You can now login.");
+                case UserListActionResult.UserAlreadyExists:
+                    Console.WriteLine("Error registering: User already existing.");
+                    handler.PerformActionResponse(handler.Handler, "action=error;msg=Error! User is already existing.");
+                    break;
+                case UserListActionResult.RegistrationOk:
+                    Console.WriteLine("User registration OK.");
+                    handler.PerformActionResponse(handler.Handler, "action=register;msg=Successful. You can now login.");
+                    break;
+                default:
+                    Console.WriteLine("Unknown action.");
+                    handler.PerformActionResponse(handler.Handler, "action=error;msg=Unsupported operation.");
+                    break;
             }
         }
 
