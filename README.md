@@ -1,7 +1,7 @@
 # RemoteMvp
 
 This project shows how to decouple a Windows-Forms based application from the application logic using a TCP/IP connection.
-For simplicity technologies such JSON, XML, REST etc. are not used.
+For simplicity technologies such JSON, XML, REST etc. are not used so far. Instead simple key-value pairs are transfered as string implementing a COMMAND pattern.
 The code relies on a TCP/IP server receiving commands (key/value pairs as string) from any client and executing some simple business logics (e.g. user registration and password check).
 
 Although everything is in one solution the application may be distributed as two specific projects (cliend and server, each of them using MvpLib).
