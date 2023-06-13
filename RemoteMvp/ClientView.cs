@@ -5,7 +5,8 @@ namespace RemoteMvpClient
     public partial class ClientView : Form
     {
 
-        public event EventHandler<string> onUiActionPerformed;
+        public event EventHandler<Tuple<string, string>> LoginRequested;
+        public event EventHandler<Tuple<string, string>> RegisterRequested;
 
         public ClientView()
         {
@@ -14,12 +15,12 @@ namespace RemoteMvpClient
 
         private void login_Click(object sender, EventArgs e)
         {
-            onUiActionPerformed?.Invoke(sender, $"action=login;user={tbUsername.Text};password={tbPassword.Text};");
+            LoginRequested?.Invoke(sender, new Tuple<string, string>(tbUsername.Text, tbPassword.Text));
         }
 
         private void register_Click(object sender, EventArgs e)
         {
-            onUiActionPerformed?.Invoke(sender, $"action=register;user={tbUsername.Text};password={tbPassword.Text};");
+            RegisterRequested?.Invoke(sender, new Tuple<string, string>(tbUsername.Text, tbPassword.Text));
         }
 
 
