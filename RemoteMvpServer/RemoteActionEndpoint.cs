@@ -6,7 +6,7 @@ namespace RemoteMvpLib
 {
     public class RemoteActionEndpoint : IActionEndpoint
     {
-        public event EventHandler<string> OnActionPerformed;
+        public event EventHandler<RemoteActionRequest> OnActionPerformed;
 
         private readonly IPAddress _ipAddress;
         private readonly IPEndPoint _localEndPoint;
@@ -56,19 +56,19 @@ namespace RemoteMvpLib
                     Handler = listener.Accept();
 
                     // Incoming data from the client.
-                    string data = null;
-
                     byte[] bytes = new byte[1024];
 
                     Console.WriteLine("Remote client connected! Waiting for data ...");
                     int bytesRec = await Handler.ReceiveAsync(bytes);
 
-                    data = Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                    Console.WriteLine("Text received : {0}", data);
-                    
-                    OnActionPerformed?.Invoke(this, data);
+                    string requestString = Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                    Console.WriteLine("Text received : {0}", requestString);
 
-                    if (data.Equals("APPEXIT")) break;
+                    RemoteActionRequest request = Deserialize(requestString);
+
+                    OnActionPerformed?.Invoke(this, request);
+
+                    if (requestString.Equals("APPEXIT")) break;
                 }
             }
             catch (Exception e)
@@ -80,12 +80,28 @@ namespace RemoteMvpLib
             Console.ReadKey();
         }
 
-        public void PerformActionResponse(Socket handler, string response)
+        public void PerformActionResponse(Socket handler, RemoteActionResponse response)
         {
-            byte[] msg = Encoding.ASCII.GetBytes(response);
+            string responseString = Serialize(response);
+            byte[] msg = Encoding.ASCII.GetBytes(responseString);
             handler.Send(msg);
             handler.Shutdown(SocketShutdown.Both);
             handler.Close();
+        }
+
+
+        // ############# Protocol layer #############
+
+        private RemoteActionRequest Deserialize(string requestString)
+        {
+            string[] parts = requestString.Split(';');
+            RemoteActionRequest request = new RemoteActionRequest(Enum.Parse<ActionType>(parts[0]), parts[1], parts[2]);
+            return request;
+        }
+
+        private string Serialize(RemoteActionResponse response)
+        {
+            return string.Format("{0};{1}", response.Type.ToString(), response.Message);
         }
     }
 }

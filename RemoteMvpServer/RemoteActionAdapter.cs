@@ -16,13 +16,16 @@ namespace RemoteMvpLib
             _port = port;
         }
 
-        public async Task<string> PerformActionAsync(string request)
+        public async Task<RemoteActionResponse> PerformActionAsync(RemoteActionRequest request)
         {
-            var bytes = new byte[1024];
+            var buffer = new byte[1024];
+            RemoteActionResponse response;
 
+            // Connect the socket to the remote endpoint. Catch any errors.
             try
             {
-                Console.WriteLine("Performing remote action: " + request);
+                string message = Serialize(request);
+                Console.WriteLine("Performing remote action: " + message);
                 // Connect to a Remote server
                 // Get Host IP Address that is used to establish a connection
                 // In this case, we get one IP address of localhost that is IP : 127.0.0.1
@@ -35,55 +38,61 @@ namespace RemoteMvpLib
                 var sender = new Socket(ipAddress.AddressFamily,
                     SocketType.Stream, ProtocolType.Tcp);
 
-                // Connect the socket to the remote endpoint. Catch any errors.
-                try
-                {
-                    // Connect to Remote EndPoint
-                    sender.Connect(remoteEP);
+                // Connect to Remote EndPoint
+                sender.Connect(remoteEP);
 
-                    Console.WriteLine("Client connected to {0}",
-                        sender.RemoteEndPoint.ToString());
+                Console.WriteLine("Client connected to {0}", sender.RemoteEndPoint.ToString());
 
-                    // Encode the data string into a byte array.
-                    var msg = Encoding.ASCII.GetBytes(request);
+                // Encode the data string into a byte array.
+                var msg = Encoding.ASCII.GetBytes(message);
 
-                    // Send the data through the socket asynchronously.
-                    var bytesSent = await sender.SendAsync(msg);
-                    Console.WriteLine($"{bytesSent} bytes sent to server. Waiting for response ...");
+                // Send the data through the socket asynchronously.
+                var bytesSent = await sender.SendAsync(msg);
+                Console.WriteLine($"{bytesSent} bytes sent to server. Waiting for response ...");
 
-                    // Receive the response from the remote device asynchronously
-                    var bytesRec = await sender.ReceiveAsync(bytes);
-                    var response = Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                    Console.WriteLine($"Received {bytesRec} bytes: {response}");
+                // Receive the response from the remote device asynchronously
+                var bytesRec = await sender.ReceiveAsync(buffer);
+                var responseString = Encoding.ASCII.GetString(buffer, 0, bytesRec);
+                Console.WriteLine($"Received {bytesRec} bytes: {responseString}");
 
-                    // Release the socket.
-                    sender.Shutdown(SocketShutdown.Both);
-                    sender.Close();
+                response = Deserialize(responseString);
 
-                    return response;
-
-                }
-                catch (ArgumentNullException ane)
-                {
-                    Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
-                }
-                catch (SocketException se)
-                {
-                    Console.WriteLine("SocketException : {0}", se.ToString());
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Unexpected exception : {0}", e.ToString());
-                }
-
+                // Release the socket.
+                sender.Shutdown(SocketShutdown.Both);
+                sender.Close();
             }
-            catch (Exception e)
+            catch (ArgumentNullException aex)
             {
-                Console.WriteLine(e.ToString());
+                Console.WriteLine("ArgumentNullException : {0}", aex.ToString());
+                throw;
+            }
+            catch (SocketException sex)
+            {
+                Console.WriteLine("SocketException : {0}", sex.ToString());
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Unexpected exception : {0}", ex.ToString());
+                throw;
             }
 
-            return string.Empty;
+            return response;
         }
 
+
+        // ############# Protocol layer #############
+
+        private static string Serialize(RemoteActionRequest request)
+        {
+            return string.Format("{0};{1};{2}", request.Type.ToString(), request.UserName, request.Password);
+        }
+
+        private static RemoteActionResponse Deserialize(string response)
+        {
+            string[] parts = response.Split(';');
+            RemoteActionResponse res = new RemoteActionResponse(Enum.Parse<ResponseType>(parts[0]), parts[1]);
+            return res;
+        }
     }
 }
