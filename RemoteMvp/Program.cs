@@ -1,3 +1,5 @@
+using RemoteMvpLib;
+
 namespace RemoteMvpClient
 {
     internal static class Program
@@ -11,7 +13,9 @@ namespace RemoteMvpClient
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new ClientView());
+            var client = new RemoteActionAdapter("localhost", 11000);
+            var clientController = new ClientPresenter(client);
+            clientController.OpenUI(true);
         }
     }
 }
