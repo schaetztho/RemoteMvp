@@ -18,31 +18,31 @@ namespace RemoteMvpApp
             // Link ActionEndpoint to local method
             _actionEndpoint = actionEndpoint;
             _actionEndpoint.OnActionPerformed += EndpointOnActionPerformed;
-
-            // Run ActionEndPoint as async
-            RunActionEndPointAsync();
         }
 
-        private void RunActionEndPointAsync()
+
+        public void RunActionEndPoint() => _actionEndpoint.RunActionEndpoint();
+
+
+        public Task RunActionEndPointAsync()
         {
             var task = new Task(_actionEndpoint.RunActionEndpoint);
             task.Start();
+            return task;
         }
 
-        private void EndpointOnActionPerformed(object? sender, string cmd)
+        private void EndpointOnActionPerformed(object? sender, RemoteActionRequest request)
         {
             if (sender is not RemoteActionEndpoint) return;
-            
-            var parameters = ProcessCmd(cmd);
 
             var handler = (RemoteActionEndpoint)sender;
-            switch (parameters["action"])
+            switch (request.Type)
             {
-                case "login":
-                    Process_Login(handler, parameters["user"],parameters["password"]);
+                case ActionType.Login:
+                    Process_Login(handler, request.UserName, request.Password);
                     break;
-                case "register":
-                    Process_Register(handler, parameters["user"], parameters["password"]);
+                case ActionType.Register:
+                    Process_Register(handler, request.UserName, request.Password);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("Request not supported");
@@ -54,16 +54,16 @@ namespace RemoteMvpApp
             switch (_users.LoginUser(username, password))
             {
                 case UserListActionResult.AccessGranted:
-                    handler.PerformActionResponse(handler.Handler, "action=login;msg=Access granted.");
+                    handler.PerformActionResponse(handler.Handler, new RemoteActionResponse(ResponseType.Success, $"Access granted for {username}."));
                     break;
                 case UserListActionResult.UserOkPasswordWrong:
-                    handler.PerformActionResponse(handler.Handler, "action=error;msg=Wrong password."); 
+                    handler.PerformActionResponse(handler.Handler, new RemoteActionResponse(ResponseType.Error, "Wrong password.")); 
                     break;
                 case UserListActionResult.UserNotExisting:
-                    handler.PerformActionResponse(handler.Handler, "action=error;msg=User not existing.");
+                    handler.PerformActionResponse(handler.Handler, new RemoteActionResponse(ResponseType.Error, $"User {username} not existing."));
                     break;
                 default:
-                    handler.PerformActionResponse(handler.Handler, "action=error;msg=Unsupported action.");
+                    handler.PerformActionResponse(handler.Handler, new RemoteActionResponse(ResponseType.Error, "Unsupported action."));
                     break;
             }
         }
@@ -74,15 +74,15 @@ namespace RemoteMvpApp
             {
                 case UserListActionResult.UserAlreadyExists:
                     Console.WriteLine("Error registering: User already existing.");
-                    handler.PerformActionResponse(handler.Handler, "action=error;msg=Error! User is already existing.");
+                    handler.PerformActionResponse(handler.Handler, new RemoteActionResponse(ResponseType.Error, $"Error! User {username} is already existing."));
                     break;
                 case UserListActionResult.RegistrationOk:
                     Console.WriteLine("User registration OK.");
-                    handler.PerformActionResponse(handler.Handler, "action=register;msg=Successful. You can now login.");
+                    handler.PerformActionResponse(handler.Handler, new RemoteActionResponse(ResponseType.Success, $"Registration successful for {username}. You can now login."));
                     break;
                 default:
                     Console.WriteLine("Unknown action.");
-                    handler.PerformActionResponse(handler.Handler, "action=error;msg=Unsupported operation.");
+                    handler.PerformActionResponse(handler.Handler, new RemoteActionResponse(ResponseType.Error, "Unsupported operation."));
                     break;
             }
         }
