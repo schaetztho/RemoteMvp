@@ -4,8 +4,8 @@ namespace RemoteMvpLib
 {
     public interface IActionEndpoint
     {
-        event EventHandler<string> OnActionPerformed;
+        event EventHandler<RemoteActionRequest> OnActionPerformed;
         void RunActionEndpoint();
-        void PerformActionResponse(Socket handler, string response);
+        void PerformActionResponse(Socket handler, RemoteActionResponse response);
     }
 }
