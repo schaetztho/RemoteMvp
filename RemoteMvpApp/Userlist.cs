@@ -59,5 +59,9 @@ namespace RemoteMvpApp
             _users.RemoveAll(user => user.UserName.Equals(username));
         }
 
+        public void RemoveAllUsers()
+        {
+            _users.Clear();
+        }
     }
 }
