@@ -44,6 +44,8 @@ namespace RemoteMvpApp
                 case ActionType.Register:
                     Process_Register(handler, request.UserName, request.Password);
                     break;
+
+                    //TODO: Hinfzufügen von Delete und ShowUser
                 default:
                     throw new ArgumentOutOfRangeException("Request not supported");
             }
