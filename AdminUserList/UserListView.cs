@@ -8,5 +8,10 @@ namespace AdminUserList
 
             //HI Tom
         }
+
+        private void UserListView_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
