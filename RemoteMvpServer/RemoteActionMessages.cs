@@ -6,7 +6,9 @@ namespace RemoteMvpLib
     {
         Register,
         Login,
-        Logout
+        Logout  ,
+        Delete,
+        ShowUser
     }
 
     public class RemoteActionRequest
