@@ -5,11 +5,21 @@ namespace AdminUserList
         public UserListView()
         {
             InitializeComponent();
-
-            //HI Tom
+            listViewUserList.Columns.Add("UserName");
+            listViewUserList.Columns.Add("Password");
         }
 
         private void UserListView_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listViewUserList_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
