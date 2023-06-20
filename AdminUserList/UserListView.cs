@@ -1,8 +1,8 @@
 namespace AdminUserList
 {
-    public partial class Form1 : Form
+    public partial class UserListView : Form
     {
-        public Form1()
+        public UserListView()
         {
             InitializeComponent();
         }

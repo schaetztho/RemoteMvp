@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AdminUserList
 {
-    internal class AdminUserListPresenter
+    public class AdminUserListPresenter
     {
     }
 }
