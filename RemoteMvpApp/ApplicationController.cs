@@ -4,7 +4,7 @@ namespace RemoteMvpApp
 {
     internal class ApplicationController
     {
-        //test
+        
         // Model 
         private readonly Userlist _users;
 
