@@ -73,6 +73,13 @@ namespace RemoteMvpClient
                         case ActionType.Login:
                             _clientView.LoginOk(response.Message);
                             break;
+                        case ActionType.Delete:
+
+                            break;
+                        case ActionType.ShowList:
+
+                            break;
+                          
                     }
                     break;
             }
