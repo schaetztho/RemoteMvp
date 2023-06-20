@@ -19,8 +19,13 @@ namespace RemoteMvpApp
             // Link ActionEndpoint to local method
             _actionEndpoint = actionEndpoint;
             _actionEndpoint.OnActionPerformed += EndpointOnActionPerformed;
+            _users.UserListChanged += OnUserListChanged;
         }
 
+        private void OnUserListChanged(object? sender, EventArgs e)
+        {
+            _users.WriteUserListInCSV();
+        }
 
         public void RunActionEndPoint() => _actionEndpoint.RunActionEndpoint();
 
@@ -42,11 +47,19 @@ namespace RemoteMvpApp
                 case ActionType.Login:
                     Process_Login(handler, request.UserName, request.Password);
                     break;
+
                 case ActionType.Register:
                     Process_Register(handler, request.UserName, request.Password);
                     break;
 
-                    //TODO: Hinfzufügen von Delete und ShowUser
+                case ActionType.Delete:
+                     Process_Delete(handler, request.UserName, request.Password);
+                    break;
+
+                case ActionType.ShowUser:
+                     Process_ShowUser(handler, request.UserName, request.Password);
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException("Request not supported");
             }
@@ -90,6 +103,17 @@ namespace RemoteMvpApp
             }
         }
 
+        private void Process_Delete(RemoteActionEndpoint handler, string username, string password)
+        {
+            //TODO: action
+        }
+        private void Process_ShowUser(RemoteActionEndpoint handler, string username, string password)
+        {
+            //TODO: action
+        }
+
+
+
         /// <summary>
         /// Helper method to parse semicolon-separated key=value pairs
         /// </summary>
@@ -107,5 +131,7 @@ namespace RemoteMvpApp
 
             return keyValuePairs;
         }
+
+       
     }
 }

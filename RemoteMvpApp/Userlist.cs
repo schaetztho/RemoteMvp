@@ -20,6 +20,8 @@ namespace RemoteMvpApp
         private record User(string UserName, string Password);
         private readonly List<User> _users;
 
+        //Event
+        public event EventHandler UserListChanged;
 
         public Userlist()
         {
@@ -52,17 +54,32 @@ namespace RemoteMvpApp
 
             User newUser = new(username, password);
             _users.Add(newUser);
+            // Fire event
+            UserListChanged?.Invoke(this,EventArgs.Empty);
+
             return UserListActionResult.RegistrationOk;
+    
         }
 
         public void RemoveUser(string username)
         {
             _users.RemoveAll(user => user.UserName.Equals(username));
+
+            // Fire event
+            UserListChanged?.Invoke(this, EventArgs.Empty);
+
         }
 
         public void RemoveAllUsers()
         {
             _users.Clear();
+
+            // Fire event
+            UserListChanged?.Invoke(this, EventArgs.Empty);
+        }
+        public void WriteUserListInCSV()
+        {
+                  //mit private member filepath und dialogview evtl
         }
     }
 }
