@@ -2,7 +2,7 @@
 
 namespace RemoteMvpApp
 {
-    internal class ApplicationController
+    public class ApplicationController
     {
         
         // Model 
@@ -10,6 +10,7 @@ namespace RemoteMvpApp
 
         // ActionEndpoint (to be called by the view)
         private readonly IActionEndpoint _actionEndpoint;
+
 
         public ApplicationController(IActionEndpoint actionEndpoint)
         {
@@ -105,11 +106,22 @@ namespace RemoteMvpApp
 
         private void Process_Delete(RemoteActionEndpoint handler, string username, string password)
         {
-            //TODO: action
+            switch (_users.RemoveUser(username))
+            {
+                case UserListActionResult.UserDeleteOK:
+                    Console.WriteLine( "User Deleted" );
+                    handler.PerformActionResponse(handler.Handler, new RemoteActionResponse(ResponseType.Success, $"User: {username} is deleted."));
+                    break;
+                case UserListActionResult.UserNotExisting:
+                    Console.WriteLine( "User cant be deleted!" );
+                    handler.PerformActionResponse(handler.Handler, new RemoteActionResponse(ResponseType.Error, "Cant delete User!"));
+                    break;
+            }
         }
         private void Process_ShowUser(RemoteActionEndpoint handler, string username, string password)
         {
-            //TODO: action
+            //TODO: action    bis hierher gehts scho wenn click showuser
+
         }
 
 

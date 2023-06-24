@@ -10,20 +10,28 @@ namespace RemoteMvpLib
         Delete,
         ShowUser
     }
+    public enum UserType
+    {
+        Admin,
+        User
+    }
 
     public class RemoteActionRequest
     {
         public ActionType Type { get; }
+        public UserType UserType { get; }
 
         public string UserName { get; }
 
         public string Password { get; }
 
-        public RemoteActionRequest(ActionType type, string username, string password)
+        public RemoteActionRequest(ActionType type, string username, string password,UserType userType)
         {
             Type = type;
             UserName = username;
             Password = password;
+            UserType = userType;
+
         }
     }
 

@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RemoteMvpApp\RemoteMvpApp.csproj" />
     <ProjectReference Include="..\RemoteMvp\RemoteMvpClient.csproj" />
   </ItemGroup>
 

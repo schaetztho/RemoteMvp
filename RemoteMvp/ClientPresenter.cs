@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RemoteMvpLib;
 
+
 namespace RemoteMvpClient
 {
     public class ClientPresenter
@@ -14,14 +15,18 @@ namespace RemoteMvpClient
         private readonly ClientView _clientView;
         private readonly IActionAdapter _adapter;
 
+
         public ClientPresenter(IActionAdapter adapter)
         {
             _adapter = adapter;
             _clientView = new ClientView();
+
             _clientView.LoginRequested += OnLoginRequested;
             _clientView.RegisterRequested += OnRegisterRequested;
+            _clientView.ShowUserRequested += OnShowUserRequested;
         }
 
+    
         public void OpenUI(bool isModal)
         {
             if (isModal)
@@ -37,15 +42,49 @@ namespace RemoteMvpClient
 
         private async void OnLoginRequested(object? sender, Tuple<string, string> e)
         {
-            RemoteActionRequest loginRequest = new RemoteActionRequest(ActionType.Login, e.Item1, e.Item2);
+            //Check if admin or user
+            //Admin have to Register with username.Admin
+            UserType userType = CheckForAdmin(e);
+
+            RemoteActionRequest loginRequest = new RemoteActionRequest(ActionType.Login, e.Item1, e.Item2,userType);
             await ProcessRequest(loginRequest);
+
+            if(loginRequest.UserType== UserType.Admin)
+            {
+                _clientView.ShowUserButtonForAdmin();
+            }
         }
 
         private async void OnRegisterRequested(object? sender, Tuple<string, string> e)
         {
-            RemoteActionRequest loginRequest = new RemoteActionRequest(ActionType.Register, e.Item1, e.Item2);
+            //Check if admin or user
+            //Admin have to Register with username.Admin
+            UserType userType = CheckForAdmin(e);
+
+            RemoteActionRequest loginRequest = new RemoteActionRequest(ActionType.Register, e.Item1, e.Item2, userType);
             await ProcessRequest(loginRequest);
         }
+
+        private async void OnShowUserRequested(object? sender, Tuple<string, string> e)
+        {
+            RemoteActionRequest loginRequest = new RemoteActionRequest(ActionType.ShowUser, e.Item1, e.Item2, UserType.Admin);
+            await ProcessRequest(loginRequest);
+        }
+
+        private UserType CheckForAdmin(Tuple<string, string> e)
+        {
+            UserType userType;
+
+            if (e.Item1.Contains(".Admin"))
+            {
+                return userType = UserType.Admin;
+            }
+            else
+            {
+                return userType = UserType.User;
+            }
+        }
+
 
         /// <summary>
         /// Collect and process all UI events
@@ -74,12 +113,8 @@ namespace RemoteMvpClient
                             _clientView.LoginOk(response.Message);
                             break;
                         case ActionType.Delete:
-                             //TODO: action
-                            break;
-                        case ActionType.ShowUser:
-                            //TODO: action
-                            break;
-                          
+                             _clientView.DeleteOk(response.Message);
+                            break; 
                     }
                     break;
             }

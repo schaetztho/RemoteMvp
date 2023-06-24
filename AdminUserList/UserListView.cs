@@ -2,6 +2,9 @@ namespace AdminUserList
 {
     public partial class UserListView : Form
     {
+        public event EventHandler<string> UserDeleteRequested;
+
+
         public UserListView()
         {
             InitializeComponent();
@@ -9,19 +12,24 @@ namespace AdminUserList
             listViewUserList.Columns.Add("Password");
         }
 
-        private void UserListView_Load(object sender, EventArgs e)
-        {
-
-        }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
+            string selectedUser = "";
+
+            // Check which item is selected
+            foreach (ListViewItem item in listViewUserList.Items)
+            {
+                if (item.Selected == true)
+                {
+                    selectedUser += item.Text.ToString();
+                }
+            }
+
+            // Fire event
+            UserDeleteRequested?.Invoke(this, selectedUser);
 
         }
 
-        private void listViewUserList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }

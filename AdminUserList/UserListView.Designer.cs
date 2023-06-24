@@ -28,41 +28,42 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listViewUserList = new System.Windows.Forms.ListView();
-            this.btnDelete = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            listViewUserList = new ListView();
+            btnDelete = new Button();
+            SuspendLayout();
             // 
             // listViewUserList
             // 
-            this.listViewUserList.Location = new System.Drawing.Point(42, 47);
-            this.listViewUserList.Name = "listViewUserList";
-            this.listViewUserList.Size = new System.Drawing.Size(279, 341);
-            this.listViewUserList.TabIndex = 0;
-            this.listViewUserList.UseCompatibleStateImageBehavior = false;
-            this.listViewUserList.SelectedIndexChanged += new System.EventHandler(this.listViewUserList_SelectedIndexChanged);
+            listViewUserList.Location = new Point(11, 11);
+            listViewUserList.Margin = new Padding(2);
+            listViewUserList.Name = "listViewUserList";
+            listViewUserList.Size = new Size(224, 338);
+            listViewUserList.TabIndex = 0;
+            listViewUserList.UseCompatibleStateImageBehavior = false;
+            listViewUserList.View = View.Details;
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(360, 47);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(112, 34);
-            this.btnDelete.TabIndex = 1;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            btnDelete.Location = new Point(239, 154);
+            btnDelete.Margin = new Padding(2);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(90, 27);
+            btnDelete.TabIndex = 1;
+            btnDelete.Text = "Delete";
+            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.Click += btnDelete_Click;
             // 
             // UserListView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.btnDelete);
-            this.Controls.Add(this.listViewUserList);
-            this.Name = "UserListView";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.UserListView_Load);
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(350, 360);
+            Controls.Add(btnDelete);
+            Controls.Add(listViewUserList);
+            Margin = new Padding(2);
+            Name = "UserListView";
+            Text = "Form1";
+            ResumeLayout(false);
         }
 
         #endregion

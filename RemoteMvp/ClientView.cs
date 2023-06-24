@@ -1,5 +1,3 @@
-using Microsoft.VisualBasic;
-
 namespace RemoteMvpClient
 {
     public partial class ClientView : Form
@@ -7,6 +5,7 @@ namespace RemoteMvpClient
 
         public event EventHandler<Tuple<string, string>> LoginRequested;
         public event EventHandler<Tuple<string, string>> RegisterRequested;
+        public event EventHandler<Tuple<string, string>> ShowUserRequested;
 
         public ClientView()
         {
@@ -23,6 +22,11 @@ namespace RemoteMvpClient
             RegisterRequested?.Invoke(sender, new Tuple<string, string>(tbUsername.Text, tbPassword.Text));
         }
 
+        private void btnShowUser_Click(object sender, EventArgs e)
+        {
+            ShowUserRequested?.Invoke(sender, new Tuple<string, string>(tbUsername.Text, tbPassword.Text));
+        }
+
 
         public void ShowErrorMessage(string message)
         {
@@ -32,6 +36,10 @@ namespace RemoteMvpClient
         public void LoginOk(string text)
         {
             MessageBox.Show(text, "Login", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+        public void DeleteOk(string text)
+        {
+            MessageBox.Show(text, "Delte", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
         public void RegisterOk(string text)
@@ -66,5 +74,11 @@ namespace RemoteMvpClient
                 button2.Enabled = false;
             }
         }
+        public void ShowUserButtonForAdmin()
+        {
+            btnShowUser.Visible = true;
+        }
+
+
     }
 }

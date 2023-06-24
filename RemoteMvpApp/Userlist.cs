@@ -13,7 +13,8 @@ namespace RemoteMvpApp
         UserAlreadyExists,
         UserOkPasswordWrong,
         AccessGranted,
-        RegistrationOk
+        RegistrationOk,
+        UserDeleteOK
     }
 
     internal class Userlist
@@ -67,13 +68,19 @@ namespace RemoteMvpApp
 
         }
 
-        public void RemoveUser(string username)
-        {
-            _users.RemoveAll(user => user.UserName.Equals(username));
+        public UserListActionResult RemoveUser(string username)
+        { 
 
-            // Fire event
-            UserListChanged?.Invoke(this, EventArgs.Empty);
+            if (_users.Any(user => user.UserName.Equals(username)))
+            {
+                _users.RemoveAll(user => user.UserName.Equals(username));
 
+                // Fire event
+                UserListChanged?.Invoke(this, EventArgs.Empty);
+
+                return UserListActionResult.UserDeleteOK;
+            }
+            return UserListActionResult.UserNotExisting;
         }
 
         public void RemoveAllUsers()
