@@ -15,21 +15,28 @@ namespace AdminUserList
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            string selectedUser = "";
+            string selectedUsername = "thomas.Admin";
 
             // Check which item is selected
             foreach (ListViewItem item in listViewUserList.Items)
             {
                 if (item.Selected == true)
                 {
-                    selectedUser += item.Text.ToString();
+                    selectedUsername += item.Text.ToString();
                 }
             }
 
             // Fire event
-            UserDeleteRequested?.Invoke(this, selectedUser);
+            UserDeleteRequested?.Invoke(this, selectedUsername);
 
         }
-
+        public void DeleteOk(string text)
+        {
+            MessageBox.Show(text, "Delete", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+        public void ShowErrorMessage(string message)
+        {
+            MessageBox.Show(message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 }

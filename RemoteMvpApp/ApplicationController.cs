@@ -121,6 +121,8 @@ namespace RemoteMvpApp
         private void Process_ShowUser(RemoteActionEndpoint handler, string username, string password)
         {
             //TODO: action    bis hierher gehts scho wenn click showuser
+            handler.PerformActionResponse(handler.Handler,new RemoteActionResponse(ResponseType.Success, "Show User list"));
+
 
         }
 

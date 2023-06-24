@@ -1,3 +1,6 @@
+using RemoteMvpClient;
+using RemoteMvpLib;
+
 namespace AdminUserList
 {
     internal static class Program
@@ -12,6 +15,11 @@ namespace AdminUserList
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new UserListView());
+
+
+            var client = new RemoteActionAdapter("localhost", 11000);
+            var clientController = new AdminUserListPresenter(client);
+            clientController.OpenUI(true);
         }
     }
 }
