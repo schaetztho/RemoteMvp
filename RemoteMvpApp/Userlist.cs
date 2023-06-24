@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace RemoteMvpApp
 {
@@ -20,12 +21,17 @@ namespace RemoteMvpApp
         private record User(string UserName, string Password);
         private readonly List<User> _users;
 
+        private string _filepath;
+
+        public string FilePath => _filepath;
+
         //Event
         public event EventHandler UserListChanged;
 
         public Userlist()
         {
             _users = new List<User>();
+            _filepath = "testCSVFilepath.csv";
         }
 
         public UserListActionResult LoginUser(string username, string password)
@@ -55,10 +61,10 @@ namespace RemoteMvpApp
             User newUser = new(username, password);
             _users.Add(newUser);
             // Fire event
-            UserListChanged?.Invoke(this,EventArgs.Empty);
+            UserListChanged?.Invoke(this, EventArgs.Empty);
 
             return UserListActionResult.RegistrationOk;
-    
+
         }
 
         public void RemoveUser(string username)
@@ -79,7 +85,42 @@ namespace RemoteMvpApp
         }
         public void WriteUserListInCSV()
         {
-                  //mit private member filepath und dialogview evtl
+           //if(_filepath == null) { GetFilepath(); }
+
+            try
+            {
+                using (var writer = new StreamWriter(_filepath))
+                {
+                    foreach (var item in _users)
+                    {
+                        string line = item.UserName + ";" + item.Password;
+                        writer.WriteLine(line);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void GetFilepath()
+        {
+            string filepath = null;
+            // open dialog 
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.ShowDialog();
+
+            // check if filename is not empty
+            if (saveFileDialog1.FileName == string.Empty)
+            {
+                MessageBox.Show("ERROR");
+            }
+            else
+            {
+                filepath = saveFileDialog1.FileName;
+            }
+
+            _filepath = filepath;
         }
     }
 }

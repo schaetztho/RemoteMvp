@@ -74,10 +74,10 @@ namespace RemoteMvpClient
                             _clientView.LoginOk(response.Message);
                             break;
                         case ActionType.Delete:
-
+                             //TODO: action
                             break;
-                        case ActionType.ShowList:
-
+                        case ActionType.ShowUser:
+                            //TODO: action
                             break;
                           
                     }
