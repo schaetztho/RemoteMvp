@@ -34,9 +34,36 @@ namespace AdminUserList
         {
             MessageBox.Show(text, "Delete", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
+        public void ShowUserOK(string text)
+        {
+            listViewUserList.Show();
+            UpdateView(text);
+            MessageBox.Show(text, "ShowUser", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
         public void ShowErrorMessage(string message)
         {
             MessageBox.Show(message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        public void UpdateView(string inputString)
+        {
+            // Update listview with new content
+            listViewUserList.Items.Clear();
+
+            string[] parts = inputString.Split(';');
+
+            for (int i = 0; i < parts.Length-1; i++)
+            {
+                // Create a string Array
+                string[] userArray = new string[2];
+
+                // Fill array with the items of the article
+                userArray[i] = parts[i];
+                userArray[i+1] = parts[i+1];
+
+                // Give listView the array to show it
+                listViewUserList.Items.Add(new ListViewItem(userArray));
+            }
+ 
         }
     }
 }

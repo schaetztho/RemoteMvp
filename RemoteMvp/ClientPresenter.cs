@@ -61,14 +61,14 @@ namespace RemoteMvpClient
             //Admin have to Register with username.Admin
             UserType userType = CheckForAdmin(e);
 
-            RemoteActionRequest loginRequest = new RemoteActionRequest(ActionType.Register, e.Item1, e.Item2, userType);
-            await ProcessRequest(loginRequest);
+            RemoteActionRequest registerRequest = new RemoteActionRequest(ActionType.Register, e.Item1, e.Item2, userType);
+            await ProcessRequest(registerRequest);
         }
 
         private async void OnShowUserRequested(object? sender, Tuple<string, string> e)
         {
-            RemoteActionRequest loginRequest = new RemoteActionRequest(ActionType.ShowUser, e.Item1, e.Item2, UserType.Admin);
-            await ProcessRequest(loginRequest);
+            RemoteActionRequest ShowUserRequest = new RemoteActionRequest(ActionType.ShowUser, e.Item1, e.Item2, UserType.Admin);
+            await ProcessRequest(ShowUserRequest);
         }
 
         private UserType CheckForAdmin(Tuple<string, string> e)
@@ -114,7 +114,11 @@ namespace RemoteMvpClient
                             break;
                         case ActionType.Delete:
                              _clientView.DeleteOk(response.Message);
-                            break; 
+                            break;
+                        case ActionType.ShowUser:
+                           _clientView.ShowUserOK(response.Message);
+
+                                break;
                     }
                     break;
             }

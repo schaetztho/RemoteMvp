@@ -9,6 +9,8 @@ namespace RemoteMvpApp
 {
     public enum UserListActionResult
     {
+        NoUserExisting,
+        ShowUserOK,
         UserNotExisting,
         UserAlreadyExists,
         UserOkPasswordWrong,
@@ -25,6 +27,7 @@ namespace RemoteMvpApp
         private string _filepath;
 
         public string FilePath => _filepath;
+       
 
         //Event
         public event EventHandler UserListChanged;
@@ -128,6 +131,21 @@ namespace RemoteMvpApp
             }
 
             _filepath = filepath;
+        }
+        public UserListActionResult UserlistToString(out string responseString)
+        {
+            responseString = "";
+
+            foreach (var item in _users)
+            {
+                responseString += item.UserName + ";" + item.Password + ";";
+            }
+
+            if(responseString=="")
+            {
+                return UserListActionResult.NoUserExisting;
+            }
+            return UserListActionResult.ShowUserOK;
         }
     }
 }

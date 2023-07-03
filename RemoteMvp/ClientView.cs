@@ -42,6 +42,10 @@ namespace RemoteMvpClient
             MessageBox.Show(text, "Delte", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
+        public void ShowUserOK(string text)
+        {
+            MessageBox.Show(text, "ShowUser", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
         public void RegisterOk(string text)
         {
             MessageBox.Show(text, "Register", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);

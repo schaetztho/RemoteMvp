@@ -15,23 +15,26 @@ namespace AdminUserList
     {
         private readonly IActionAdapter _adapter;
         private UserListView _userListView;
+        private ClientView _adminLoginView;
 
 
         public AdminUserListPresenter(IActionAdapter adapter)
         {
             _adapter = adapter;
             _userListView = new UserListView();
+            _adminLoginView = new ClientView();
 
 
             _userListView.UserDeleteRequested += OnUserDeleteRequested;
+           
 
         }
 
 
         private async void OnUserDeleteRequested(object? sender, string e)
         {
-            RemoteActionRequest loginRequest = new RemoteActionRequest(ActionType.Delete, e, null, 0);
-            await ProcessRequest(loginRequest);
+            RemoteActionRequest deleteRequest = new RemoteActionRequest(ActionType.Delete, e, null, 0);
+            await ProcessRequest(deleteRequest);
         }
 
         public void OpenUI(bool isModal)
@@ -60,9 +63,19 @@ namespace AdminUserList
                     _userListView.ShowErrorMessage(response.Message);
                     break;
                 case ResponseType.Success:
-                    _userListView.DeleteOk(response.Message);
+                    switch (request.Type)
+                    {
+                        case ActionType.Delete:
+                            _userListView.DeleteOk(response.Message);
+                            break;
+                        case ActionType.ShowUser:
+                            _userListView.ShowUserOK(response.Message);
+                            break;
+                    }
                     break;
             }
-        }
-    }
+        }    
+                        
+                  
+}
 }

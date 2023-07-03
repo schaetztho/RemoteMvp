@@ -120,11 +120,20 @@ namespace RemoteMvpApp
         }
         private void Process_ShowUser(RemoteActionEndpoint handler, string username, string password)
         {
-            //TODO: action    bis hierher gehts scho wenn click showuser
-            handler.PerformActionResponse(handler.Handler,new RemoteActionResponse(ResponseType.Success, "Show User list"));
-
-
+            switch (_users.UserlistToString(out string responseString))
+            {
+                case UserListActionResult.ShowUserOK:
+                    Console.WriteLine("Show User prepeared");
+                    handler.PerformActionResponse(handler.Handler, new RemoteActionResponse(ResponseType.Success, responseString));
+                    break;
+                case UserListActionResult.NoUserExisting:
+                    Console.WriteLine("No User in  Userlist, can not show Userlist");
+                    handler.PerformActionResponse(handler.Handler, new RemoteActionResponse(ResponseType.Error, "No User in  Userlist, can not show Userlist"));
+                    break;
+            }                                                   
         }
+        
+
 
 
 
