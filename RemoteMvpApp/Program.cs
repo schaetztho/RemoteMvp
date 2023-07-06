@@ -1,8 +1,9 @@
-﻿using System.Net.Mime;
+﻿using System.Net.Mime;                                                                                         
 using System.Windows.Forms;
 using RemoteMvpApp;
 using RemoteMvpClient;
 using RemoteMvpLib;
+using AdminUserList;
 
 
 // Bootstrapper sequence
@@ -17,3 +18,8 @@ Task serverTask = server.RunActionEndPointAsync();  // Asynchronous (non-blockin
 var client = new RemoteActionAdapter("localhost", 11000);
 var clientController = new ClientPresenter(client);
 clientController.OpenUI(true);
+
+//Admin view
+var admin = new RemoteActionAdapter("localhost", 11000);
+var adminController = new AdminUserListPresenter(admin);
+adminController.OpenUI(true);

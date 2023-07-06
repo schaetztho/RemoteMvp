@@ -30,6 +30,7 @@
         {
             listViewUserList = new ListView();
             btnDelete = new Button();
+            btnShowUser = new Button();
             SuspendLayout();
             // 
             // listViewUserList
@@ -53,11 +54,22 @@
             btnDelete.UseVisualStyleBackColor = true;
             btnDelete.Click += btnDelete_Click;
             // 
+            // btnShowUser
+            // 
+            btnShowUser.Location = new Point(240, 11);
+            btnShowUser.Name = "btnShowUser";
+            btnShowUser.Size = new Size(94, 52);
+            btnShowUser.TabIndex = 2;
+            btnShowUser.Text = "Show User";
+            btnShowUser.UseVisualStyleBackColor = true;
+            btnShowUser.Click += btnShowUser_Click;
+            // 
             // UserListView
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(350, 360);
+            Controls.Add(btnShowUser);
             Controls.Add(btnDelete);
             Controls.Add(listViewUserList);
             Margin = new Padding(2);
@@ -70,5 +82,6 @@
 
         private ListView listViewUserList;
         private Button btnDelete;
+        private Button btnShowUser;
     }
 }

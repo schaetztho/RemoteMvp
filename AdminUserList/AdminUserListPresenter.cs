@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using RemoteMvpApp;
+
 
 
 namespace AdminUserList
@@ -15,21 +15,25 @@ namespace AdminUserList
     {
         private readonly IActionAdapter _adapter;
         private UserListView _userListView;
-        private ClientView _adminLoginView;
+
 
 
         public AdminUserListPresenter(IActionAdapter adapter)
         {
             _adapter = adapter;
             _userListView = new UserListView();
-            _adminLoginView = new ClientView();
+;
 
 
             _userListView.UserDeleteRequested += OnUserDeleteRequested;
-           
-
+            _userListView.ShowUserRequested += OnShowUserRequested;
         }
 
+        private async void OnShowUserRequested(object? sender, EventArgs e)
+        {
+            RemoteActionRequest AdminRequest = new RemoteActionRequest(ActionType.ShowUser, "admin", "admin",UserType.Admin);
+            await ProcessRequest(AdminRequest);
+        }
 
         private async void OnUserDeleteRequested(object? sender, string e)
         {
